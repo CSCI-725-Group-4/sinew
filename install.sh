@@ -56,7 +56,7 @@ echo "Installing solr"
 # Solr install
 export SOLR_ROOT=/usr/local/solr-4.4.0
 cd /tmp
-wget http://www.poolsaboveground.com/apache/lucene/solr/4.4.0/solr-4.4.0-src.tgz
+wget https://archive.apache.org/dist/lucene/solr/4.4.0/solr-4.4.0-src.tgz
 tar -xzf solr-4.4.0-src.tgz
 (cd solr-4.4.0; ant compile) || exit 1
 mv solr-4.4.0/example /usr/local/solr-4.4.0
