@@ -1,6 +1,6 @@
 #!/usr/bin/zsh
 
-export SRC_ROOT=`pwd`/src
+export SRC_ROOT=~/sinew/src
 
 # Install Some Additional Deps
 echo "Installing Deps"
