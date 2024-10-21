@@ -1,7 +1,7 @@
 #!/usr/bin/zsh
 
 export PG_ROOT=${1-"/usr/local/pgsql"}
-if ! (sudo ls $PG_ROOT/data > /dev/null); then
+if ! (sudo ls $PG_ROOT/data/global > /dev/null); then
 	echo "Initializing postgres"
 	su postgres -c "/usr/local/pgsql/bin/initdb -D /usr/local/pgsql/data/"
 fi
