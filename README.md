@@ -44,7 +44,7 @@ This should be running the postgres service and creating a test DB but the progr
 } 2>&1 | tee -a sinew_install.log
 ```
 
-## Testing
+### Testing
 
 The below set of commands tries to run some small tests, they're seg faulting, gotta fix that.
 
@@ -56,4 +56,21 @@ The below set of commands tries to run some small tests, they're seg faulting, g
   && zsh test.sh \
   && echo "SUCCESS: Setup completed successfully!"
 } 2>&1 | tee -a sinew_install.log
+```
+
+## Helpful Tips
+
+When I am running the WSL windows, I keep having to log into Github and setting up git, so this is the command I run to do all that as easily as possible (replace your email and username in there):
+
+```bash
+(type -p wget >/dev/null || (sudo apt update && sudo apt-get install wget -y)) \
+	&& sudo mkdir -p -m 755 /etc/apt/keyrings \
+	&& wget -qO- https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo tee /etc/apt/keyrings/githubcli-archive-keyring.gpg > /dev/null \
+	&& sudo chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg \
+	&& echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
+	&& sudo apt update \
+	&& git config --global user.email <YOUR_GITHUB_EMAIL> \
+	&& git config --global user.name <YOUR_GITHUB_USERNAME> \
+	&& sudo apt install gh -y \
+	&& gh auth login
 ```
