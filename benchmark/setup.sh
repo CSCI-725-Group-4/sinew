@@ -9,12 +9,12 @@ zsh $BNCHMRK_ROOT/../install.sh
 
 # TODO: We might need to do some work arounds here, the recent versions are not built for gcc compilation
 # (if this is needed, idk if it is)
-# git reset dea840bbb6ff5f18616b444b6ebd8278131a1da7 --hard
 exit(0)
 
 # Pl/v8 stuff
 
 git clone https://github.com/v8/v8.git v8 && cd v8
+# git reset dea840bbb6ff5f18616b444b6ebd8278131a1da7 --hard
 export GYPFLAGS="-D OS=freebsd"
 make dependencies
 make native.check -j 4 library=shared strictaliasing=off console=readline
