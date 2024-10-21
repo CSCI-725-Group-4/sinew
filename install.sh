@@ -4,7 +4,7 @@ export SRC_ROOT=~/sinew/src
 
 # Install Some Additional Deps
 echo "Installing Deps"
-sudo apt-get install libreadline-dev zlib1g-dev build-essential
+sudo apt-get install libreadline-dev zlib1g-dev build-essential -y
 echo ""
 
 # Postgres install
