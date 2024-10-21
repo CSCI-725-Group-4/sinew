@@ -5,7 +5,9 @@ OUT='/tmp/dtahara/out'
 
 mkdir -p $OUT
 
-for ser in sinew protobuf avro; do
+# TODO: add these back
+# for ser in sinew protobuf avro; do
+for ser in sinew; do
   cd $ser
   mkdir -p /tmp/dtahara/$ser
   make clean
