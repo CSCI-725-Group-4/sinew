@@ -3,11 +3,11 @@
 export PG_ROOT=${1-"~/pgsql"}
 if ! (sudo ls $PG_ROOT/data/global > /dev/null); then
 	echo "Initializing postgres"
-	sudo /usr/local/pgsql/bin/initdb -D ~/pgsql/data/
+	/usr/local/pgsql/bin/initdb -D ~/pgsql/data/
 fi
 
 echo "Running postgres"
-sudo /usr/local/pgsql/bin/postgres -D ~/pgsql/data/
+/usr/local/pgsql/bin/postgres -D ~/pgsql/data/
 
 # This needs to be run it a seperate shell window
 # sudo /usr/local/pgsql/bin/createdb test
