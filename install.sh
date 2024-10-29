@@ -19,13 +19,13 @@ if ! (ls $PG_ROOT > /dev/null); then
     echo "Install Complete!"
 fi
 
-if ! (ls $PG_ROOT/data > /dev/null); then
-    echo "Creating postgres User"
-    (sudo adduser postgres && sudo passwd postgres &&
-    sudo mkdir $PG_ROOT/data &&
-    sudo chown postgres:postgres $PG_ROOT/data) || exit 1
-    echo "User Created!"
-fi
+# if ! (ls $PG_ROOT/data > /dev/null); then
+#     echo "Creating postgres User"
+#     (sudo adduser postgres && sudo passwd postgres &&
+#     sudo mkdir $PG_ROOT/data &&
+#     sudo chown postgres:postgres $PG_ROOT/data) || exit 1
+#     echo "User Created!"
+# fi
 
 # Update postgres extensions
 echo "Updating Postgres extensions"
