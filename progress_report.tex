@@ -12,8 +12,23 @@
     %TODO
 
 \section{Literature Report}
-    %TODO
+    % Kind of like the related works section of a paper 
+    We focused on the comparisons between Sinew and the moden database services MongoDB, PostgreSQL JSON. Our goal in doing this is to see how Sinew compares to modern dataabse systems in aspects such as batch loading, querying, updating and overall performace and scalability. This section will cover the primary works used in our evaluation. 
+
+    \subsection{Sinew}
+
+    The main objective of Sinew\cite{Tahara_Diamond_Abadi_2014} is to enable developers to be able to represent data using self-describing formatting while still utilizing SQL and other traditional dataabse systems. It was built to be a middle layer between multi-structured data and a relational database management structure (RDBMS). Sinew acts as an efficient tool able to convert semi-structured data into something stored and maintainable in an RDBMS. 
+
+    The Sinew system architecture is comprised of two layers, the use layer and the stroage layer. The storage layer allows Sinew to manage and query multi-structured data efficiently. Sinew's schema suppports universla relation in which one document corresponds to one row. For every key, value pair from a document, the value will logically get stored in the row and column whihc correspond to the document and key. A hybrid approach was used for mapping logial to physical schema to maintain performace benifits, space eficiency and single column serilization. The approach consisted of a combination of "all-physical-column" approach and "all-vitual-column" appraoch. Using this new hybrid appraich, columns for some of the attributes get created while the rest are stored in a special serilizated column called the column resivoir. This enables Sinew to maintain the benifits of using physical columns where they're needed while still keeping less frequenrly accessed keys tored virtually. 
+
+    Sinew documents attribute names, types and storage menthods to maintain a correct mapping between logial and physcial and make system optimizations possible in a catalog. This catalog keeps track of which keys have been observed, the key type information which has been derived from data, the number of occurences of each key, if a column is virtual or physciual and a 'dirty' flag. The catalog is split into two parts so Sinew can easily identify logical schema and physical schema. 
+
+    
+    
 
 \bibliographystyle{acm}
 \bibliography{references}
+
 \end{document}
+
+
