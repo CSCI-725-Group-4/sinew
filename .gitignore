@@ -5,3 +5,10 @@ build/
 *.a
 *.db
 *.out
+*.aux
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.gz
+progress_report.log
