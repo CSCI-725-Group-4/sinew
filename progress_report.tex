@@ -32,7 +32,10 @@
     \subsection{MongoDB}
 
 
-    \subsection{PostgreSQL JSON}
+        \subsection{PostgreSQL JSON}
+     PostgreSQL architecture \cite{PostgresMedium} is a combination of shared memory, background processes, and data files. The shared memory contains a shared buffer a WAL buffer. The shared bufffer is responsible for minimizing disk input/output so long as it is able to minimize contention when accessed by multiple users, large enough so that it may be accessed quickly, and any frequently used blocks remain in the buffer for as long as possible. The WAL buffer is used to store changes in the database temporarily in a WAL file. The four main process types that Postgres hosts are: Postmaster, background, backend, and client. The Postmaster process creates the backend processses for the client conenctions and is the overall parent process for the rest of the processes. The background processes all serve different funcitons and play a major role in database management. The backend process executes queries before returning the results to the user. This task is reliant on local memeory. 
+
+     In terms of scalability, Postgres scaling\cite{Postgres-scalable} requries the understanding and proper implementation of PostgreSQL horizontal scaling as well as vertical scaling. PostgreSQL is kept operations and accessbale by high availabilty (HA) regardless of hardware failures or software crashes. This type of implementaiton requires replication, failover, load nbalancing and continuious monitoring. 
 
 \section{Accomplishments so far}
     \subsection{Sinew Implementation}
