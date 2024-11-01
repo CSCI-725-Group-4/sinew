@@ -8,9 +8,6 @@
 
 \maketitle
 
-\section{Accomplishments so far}
-    %TODO
-
 \section{Literature Report}
     % Kind of like the related works section of a paper 
     We focused on the comparisons between Sinew and the moden database services MongoDB, PostgreSQL JSON. Our goal in doing this is to see how Sinew compares to modern dataabse systems in aspects such as batch loading, querying, updating and overall performace and scalability. This section will cover the primary works used in our evaluation. 
@@ -36,8 +33,19 @@
 
 
     \subsection{PostgreSQL JSON}
-    
-    
+
+\section{Accomplishments so far}
+    \subsection{Sinew Implementation}
+    The main task of this problem is updating the Sinew code to be compatible with modern systems. In the original paper's implementation of Sinew they used Postgres as the underlying database \cite{Tahara_Diamond_Abadi_2014}. Since the publishing of the paper in 2014 Postgres has seen significant updates, so we need to update the version of Postgres and ensure that the system still works. For this phase, we aimed at simply getting the system to run with the version it was created with (9.3.0). The Sinew repository includes multiple bash and make files that perform the initial setup, install the database, and perform some basic tests.
+
+    The main challenge with implementing Sinew is the lack of documentation in the repository. The initial README file provided no information on how to configure, initialize, or run the system. This left us with a daunting task of having to parse through each file in the repository to understand its function and how it impacted the overall system. In addition to no overarching documentation, the plentiful bash files in the repository are similarly left undocumented, which forced us to analyze each file to understand each one's intended purpose and the order in which to execute these. As we have analyzed the original source code we have tried to remedy this situation and have been creating our own documentation for the repository, which will allow future users to reproduce our implementation easily.
+
+    We updated the initialization and startup files so that the project can be run on a WSL Ubuntu Linux instance. After the changes to these files the necessary software is able to be installed on the instance and can build a test database hosted on postgres. At this current point we are waiting to update the test bash files as we are working on acquiring the necessary data files to be able to insert and view documents; this will be covered in the next subsection. Once we have the data files we will verify that Sinew is able to load, store, and interact with semi-structured data. Following this, we will update the underlying Postgres version and perform any modifications to the repository that are needed to allow Sinew to be updated to current standards.
+
+    \subsection{MongoDB Benchmark}
+    In the original paper the authors compared the implementation of Sinew against MongoDB and Postgres JSON. During this phase we also started configuring the MongoDB benchmark system. During these experiments the database systems were evaluated on their performance of varying queries from the NoBench NoSQL benchmark suite [insert citation here]. This suite has been continually updated since the original publishing and will provide a viable benchmark dataset. We are currently working on getting an implementation of this suite running which will provide the datasets necessary for evaluating our database frameworks. This involves configuring data generation for a MongoDB database, which we will then extract the outputted JSON documents to use for Sinew and Postgres JSON respectively.
+
+    At this current stage we are configuring the necessary files for NoBench to generate the files. The benchmark does provide some documentation on how to configure the necessary YAML file to run the system, but it is limited at best. We have implemented some basic configurations that perform generation of simple data, along with performing reads and writes on a MongoDB database. We are currently configuring a YAML file that provides the data records that were used in the original paper, which involves implementing multiple binding functions from the NoBench suite. Once this is completed we will be able to use the generated data on all the benchmark database systems for the performance comparison.
 
 \bibliographystyle{acm}
 \bibliography{references}
