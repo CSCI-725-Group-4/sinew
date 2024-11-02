@@ -29,7 +29,13 @@
     Due to the nature of the hybrid storage, queries must match the physical schema; this is where a query rewriter comes into play. Here, queries are converted into an abstract syntax tree so that they can be validated and later sent to the storage layer to be executed. If any of the column references cannot be validated, the physical column is rewritten. 
 
 
-    \subsection{MongoDB}
+        \subsection{MongoDB}
+    The architecture of MongoDB consists of many features that enable a strong an flexible databse. MongoDB is a non-relationsal document poriented database management system that utilizes a document structure to store its data~\cite{Geeks4geeksMongo}. Similar to RDBMS tables, MongoDB uses collections to hold documents within the database which are able to store docuemtns of differnt feilds. Collections in MongoDB are what stores the data whereas docuemnts represent a specifc record within a collection. Unlike SQL databases like MySQL, a document with a field that might not exist in the database does not cause any errors~\cite{Mongo-Medium}. 
+    
+    As of 2014, MongoDB's default storage enging becane WildTiger~\cite{Mongo-Medium}. WildTiger enabled two concurrent writes to update different documents in the same collection wihtout need for serialization, a feature that was not possible with the oringal release of MongoDB. The Binary-JSON (BSON) objects in WildTiger are compressed and stored in a hidden index where BSON paris store any recordIDs. This increases the performance grealty by redusing the number of I/O transactions.
+
+
+    The process by which MongoDB scales its data is neccesary in order to meet any growning demands of an application or database. MongoDB supports two types of scaling: horizontal and vertical~\cite{Mongo-scalability}. Horizontal sclaing, or scaling down, is done by distributing data across multiple nodes where the nodes are responsible for storing portions of the data. This is achieved through sharding, a mechanism that invovles partitioning a database into smaller parts called 'shards'. These shards are hosted on a seperate server forming what is known as a shard cluster. Vertical sclaing, or scaling up, includes the act of increasing the capacity of a single server by adding CPU, RAMm, or other storage resorces. In terms of MongoDB, this would mean upgrading the hardware to something mroe powerful. This may prove to be effective overall but has its own limitations. 
 
 
         \subsection{PostgreSQL JSON}
