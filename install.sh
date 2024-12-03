@@ -30,7 +30,7 @@ fi
 # Update postgres extensions
 echo "Updating Postgres extensions"
 echo ""
-export PG_ROOT=/tmp/postgresql-9.3.0/ # TODO: change me
+#export PG_ROOT=/tmp/postgresql-9.3.0/ # TODO: change me
 
 echo "Document extension"
 rm -rf $PG_ROOT/contrib/document
