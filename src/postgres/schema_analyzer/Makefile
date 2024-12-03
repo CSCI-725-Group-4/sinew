@@ -7,7 +7,7 @@ EXTENSION = schema_analyzer
 DATA = schema_analyzer--1.0.0.sql
 
 ifdef USE_PGXS
-PG_CONFIG = pg_config
+PG_CONFIG = ../../bin/pg_config
 PGXS := $(shell $(PG_CONFIG) --pgxs)
 include $(PGXS)
 else
