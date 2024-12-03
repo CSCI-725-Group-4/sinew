@@ -1,3 +1,6 @@
+debug: CFLAGS += -g
+debug: all
+
 all: sinew_test
 
 sinew_test: ../json.o sinew_test.o document.o schema.o hash_table.o ../lib/jsmn/libjsmn.a
@@ -6,7 +9,7 @@ sinew_test: ../json.o sinew_test.o document.o schema.o hash_table.o ../lib/jsmn/
 	$(CC) -c $(CFLAGS) $^ -o $@
 
 test: clean-test
-	./sinew_test ~/Downloads/nobench/nb_16000.out deser.out project.out mproject.out
+	./sinew_test ~/sinew/json_files/test_json_input.out deser.out project.out mproject.out
 
 clean: clean-build clean-test
 

@@ -47,7 +47,6 @@ int main(int argc, char** argv) {
     if (!test_serialize(infile)) {
         exit(EXIT_FAILURE);
     }
-    fprintf(stderr, "%s\n", "made it here");
     diff = clock() - start;
     msec = diff * 1000 / CLOCKS_PER_SEC;
     printf("Serialize: %d ms\n", msec);
@@ -132,17 +131,19 @@ int test_multiple_projection(FILE *outfile) {
     fread(&binsize, sizeof(binsize), 1, dbfile);
     while (!feof(dbfile)) {
         char buffer[1000];
-        sprintf(buffer, "");
+        buffer[0] = '\0';
 
         binary = malloc(binsize);
         fread(binary, binsize, 1, dbfile);
         for (int i = 0; i < num_projected_keys; ++i) {
             value = extract_key(binary, multiple_projected_keyname[i], multiple_projected_typename[i]);
-            if (value) {
-                sprintf(buffer, "%s%s,", buffer, value);
+            
+	    int remaining_space = sizeof(buffer) - strlen(buffer) - 1;
+	    if (value) {
+                snprintf(buffer + strlen(buffer), remaining_space, "%s,", value);
                 free(value);
             } else {
-                sprintf(buffer, "%s%s, ", buffer, "");
+                snprintf(buffer + strlen(buffer), remaining_space, "%s,", "");
             }
         }
         fprintf(outfile, "%s\n", buffer);
@@ -197,7 +198,7 @@ int test_serialize(FILE* infile) {
 
     dbfile = fopen(dbname, "w");
     schemafile = fopen(schemafname, "w");
-
+    
     buffer = NULL;
     len = 0;
     while ((read = getline(&buffer, &len, infile)) != -1) {

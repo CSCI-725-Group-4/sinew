@@ -163,16 +163,24 @@ array_to_binary(char *json_arr, char **outbuff_ref)
         }
 
         datum_size = to_binary(arrtype, jsmntok_to_str(curtok, json_arr), &binary);
-        memcpy(outbuff + buffpos, &datum_size, sizeof(int));
+	if (buffpos + sizeof(int) + datum_size >= data_size)
+	{
+	    data_size = 2 * (buffpos + sizeof(int) + datum_size) + 1;
+	    void *newbuff = realloc(outbuff, data_size);
+	    if (!newbuff)
+	    {
+		fprintf(stderr, "Reallocation failed for size %d\n", data_size);
+		free(outbuff);
+		free(binary);
+		free(tokens);
+		return -1;
+	    }
+	    outbuff = newbuff;
+	}
+	memcpy(outbuff + buffpos, &datum_size, sizeof(int));
         buffpos += sizeof(int);
         memcpy(outbuff + buffpos, binary, datum_size);
         buffpos += datum_size;
-
-        if (buffpos >= data_size)
-        {
-            data_size = 2 * buffpos + 1;
-            outbuff = realloc(outbuff, data_size);
-        }
 
         free(binary);
         if (curtok->type == JSMN_ARRAY || curtok->type == JSMN_OBJECT)
