@@ -11,7 +11,7 @@ LIBS += $(jsmndir)/libjsmn.a
 SHLIB_LINK := $(LIBS)
 
 ifdef USE_PGXS
-PG_CONFIG = pg_config
+PG_CONFIG = ../../bin/pg_config
 PGXS := $(shell $(PG_CONFIG) --pgxs)
 include $(PGXS)
 else
