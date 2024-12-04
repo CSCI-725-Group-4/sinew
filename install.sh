@@ -33,18 +33,17 @@ echo ""
 #export PG_ROOT=/tmp/postgresql-9.3.0/ # TODO: change me
 
 echo "Document extension"
-rm -rf $PG_ROOT/contrib/document
-mkdir -p $PG_ROOT/contrib/documen
-tcp -r $SRC_ROOT/postgres/document $PG_ROOT/contrib/document || exit 1
+sudo rm -rf $PG_ROOT/contrib/document
+sudo mkdir -p $PG_ROOT/contrib
+sudo cp -r $SRC_ROOT/postgres/document $PG_ROOT/contrib || exit 1
 (cd $PG_ROOT/contrib/document;
-   (cd lib/jsmn; make) && make USE_PGXS=1 && sudo make install USE_PGXS=1) || exit 1
+   (cd lib/jsmn; sudo make) && sudo make USE_PGXS=1 && sudo make install USE_PGXS=1) || exit 1
 echo ""
 
 echo "Schema Analyzer"
-rm -rf $PG_ROOT/contrib/schema_analyzer
-mkdir -p $PG_ROOT/contrib/document
-cp -r $SRC_ROOT/postgres/schema_analyzer $PG_ROOT/contrib/schema_analyzer || exit 1
-(cd $PG_ROOT/contrib/schema_analyzer; make USE_PGXS=1 && sudo make install USE_PGXS=1) || exit 1
+sudo rm -rf $PG_ROOT/contrib/schema_analyzer
+sudo cp -r $SRC_ROOT/postgres/schema_analyzer $PG_ROOT/contrib || exit 1
+(cd $PG_ROOT/contrib/schema_analyzer; sudo make USE_PGXS=1 && sudo make install USE_PGXS=1) || exit 1
 echo ""
 
 exit 0;
