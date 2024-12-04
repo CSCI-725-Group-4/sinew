@@ -34,13 +34,15 @@ echo ""
 
 echo "Document extension"
 rm -rf $PG_ROOT/contrib/document
-cp -r $SRC_ROOT/postgres/document $PG_ROOT/contrib/document || exit 1
+mkdir -p $PG_ROOT/contrib/documen
+tcp -r $SRC_ROOT/postgres/document $PG_ROOT/contrib/document || exit 1
 (cd $PG_ROOT/contrib/document;
    (cd lib/jsmn; make) && make USE_PGXS=1 && sudo make install USE_PGXS=1) || exit 1
 echo ""
 
 echo "Schema Analyzer"
 rm -rf $PG_ROOT/contrib/schema_analyzer
+mkdir -p $PG_ROOT/contrib/document
 cp -r $SRC_ROOT/postgres/schema_analyzer $PG_ROOT/contrib/schema_analyzer || exit 1
 (cd $PG_ROOT/contrib/schema_analyzer; make USE_PGXS=1 && sudo make install USE_PGXS=1) || exit 1
 echo ""
