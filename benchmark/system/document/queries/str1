@@ -1,2 +1,0 @@
-\timing
-SELECT document_get_text(data, 'str1') FROM test;
