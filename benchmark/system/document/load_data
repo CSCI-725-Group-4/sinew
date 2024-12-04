@@ -3,4 +3,4 @@ CREATE EXTENSION IF NOT EXISTS document_type;
 
 CREATE TABLE test4(id serial, data document);
 
-COPY test4(data) FROM '/home/drg5567/sinew/json_files/full16milsplit.txt';
+COPY test4(data) FROM '~/sinew/json_files/full16milsplit.txt';
