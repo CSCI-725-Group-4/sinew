@@ -1,14 +1,60 @@
 \documentclass[sigconf]{acmart}
 \usepackage{pgfplots}
+\usepackage{hyperref}
 \pgfplotsset{compat=1.18}
 
 \begin{document}
 
-\title{725 Progress Report}
-\author{Marie Mellor \and Clinten Hopkins \and Danny Gardner}
+\title{A Comparison of Sinew to Modern Semi-Structured Data Management Systems}
+
+\author{Marie Mellor}
+\affiliation{%
+  \institution{Rochester Institute of Technology}
+  \streetaddress{1 Lomb Memorial Drive}
+  \city{Rochester}
+  \state{New York}
+  \country{USA}}
+\email{mhm3244@rit.edu}
+
+\author{Danny Gardner}
+\affiliation{%
+  \institution{Rochester Institute of Technology}
+  \streetaddress{1 Lomb Memorial Drive}
+  \city{Rochester}
+  \state{New York}
+  \country{USA}}
+\email{drg5567@rit.edu}
+
+\author{Clinten Hopkins}
+\affiliation{%
+  \institution{Rochester Institute of Technology}
+  \streetaddress{1 Lomb Memorial Drive}
+  \city{Rochester}
+  \state{New York}
+  \country{USA}}
+\email{cmh3586@rit.edu}
+
+\acmConference[CSCI-725]{Adv DB: NoSQL/NewSQL}{Fall, 2024}{Rochester, NY}
+
+\begin{CCSXML}
+<ccs2012>
+   <concept>
+       <concept_id>10002951.10002952.10003190.10003192</concept_id>
+       <concept_desc>Information systems~Database query processing</concept_desc>
+       <concept_significance>500</concept_significance>
+       </concept>
+ </ccs2012>
+\end{CCSXML}
+
+\ccsdesc[500]{Information systems~Database query processing}
+
+\begin{abstract}
+    Over the last 10 years, the popularity and use of semi-structured databases has exploded. With this, we take a look back at a promising, at the time, solution to the problem of storing semi-structured data that offered PostgreSQL querying, Sinew. Sinew offered a way to be able to store semi-structured data in PostgreSQL using a custom column materializer and "column reservoir" to be able to store both dense and sparse columns in efficient ways. Since then, offerings from MongoDB and PostgreSQL themselves (through PostgreSQL's \texttt{jsonb} column type) have had continuous development, offering a more competitive solution to these problems. At the time, Sinew outperformed every offering that the authors compared to, so we decided to re-evaluate the system to see if it still holds up today. Overall, the system seems to perform fairly competitively, though has many implementation issues and could benefit from a re-implementation in modern PostgreSQL. 
+\end{abstract}
+
+\keywords{Sinew; SQL; Relational Database Management System (RDBMS); NoSQL; JSON; MongoDB; Semi-structured data; Column materialization; Query performance benchmarking; NoSQLBench benchmark suite; Document-oriented database}
 
 \maketitle
-
 
 \section{Literature Report}
    % Kind of like the related works section of a paper
@@ -32,12 +78,12 @@
 
 
    \subsection{MongoDB}
-   The architecture of MongoDB consists of many features that enable a strong and flexible database. MongoDB is a non-relational document oriented database management system that utilizes a document structure to store its data~\cite{Geeks4geeksMongo}. Similar to RDBMS tables, MongoDB uses collections to hold data within the database, the collections are able to store documents which have different fields. Collections in MongoDB are what stores the data whereas documents represent a specific record within a collection. Unlike SQL databases like MySQL, a document with a field that might not exist in the database does not cause any errors~\cite{Mongo-Medium}.
+   The architecture of MongoDB consists of many features that enable a strong and flexible database. MongoDB is a non-relational document oriented database management system that utilizes a document structure to store its data \cite{Geeks4geeksMongo}. Similar to RDBMS tables, MongoDB uses collections to hold data within the database, the collections are able to store documents which have different fields. Collections in MongoDB are what stores the data whereas documents represent a specific record within a collection. Unlike SQL databases like MySQL, a document with a field that might not exist in the database does not cause any errors \cite{Mongo-Medium}.
   
-   As of 2014, MongoDB's default storage engine became WildTiger~\cite{Mongo-Medium}. WildTiger enabled two concurrent writes to update different documents in the same collection without the need for serialization. This feature that was not possible with the original release of MongoDB. The Binary-JSON (BSON) objects in WildTiger are compressed and stored in a hidden index where BSON pairs stores any recordIDs. This increases the performance greatly by reducing the number of I/O transactions.
+   As of 2014, MongoDB's default storage engine became WildTiger \cite{Mongo-Medium}. WildTiger enabled two concurrent writes to update different documents in the same collection without the need for serialization. This feature that was not possible with the original release of MongoDB. The Binary-JSON (BSON) objects in WildTiger are compressed and stored in a hidden index where BSON pairs stores any recordIDs. This increases the performance greatly by reducing the number of I/O transactions.
 
 
-   The process by which MongoDB scales its data is necessary in order to meet any growing demands of an application or database. MongoDB supports two types of scaling: horizontal and vertical~\cite{Mongo-scalability}. Horizontal scaling, or scaling down, is done by distributing the data across multiple nodes where each node is responsible for storing portions of the data. This is achieved by sharding, a mechanism that involves partitioning a database into smaller parts called 'shards'. These shards are hosted on a separate server forming what is known as a shard cluster. Vertical scaling, or scaling up, is the act of increasing the capacity of a single server by adding CPU, RAM, or other storage resources. In terms of MongoDB, this would mean upgrading the hardware to something more powerful. This may prove to be effective overall but has its own limitations.
+   The process by which MongoDB scales its data is necessary in order to meet any growing demands of an application or database. MongoDB supports two types of scaling: horizontal and vertical \cite{Mongo-scalability}. Horizontal scaling, or scaling down, is done by distributing the data across multiple nodes where each node is responsible for storing portions of the data. This is achieved by sharding, a mechanism that involves partitioning a database into smaller parts called 'shards'. These shards are hosted on a separate server forming what is known as a shard cluster. Vertical scaling, or scaling up, is the act of increasing the capacity of a single server by adding CPU, RAM, or other storage resources. In terms of MongoDB, this would mean upgrading the hardware to something more powerful. This may prove to be effective overall but has its own limitations.
   
 
    \subsection{PostgreSQL JSON}
@@ -47,6 +93,7 @@
 
 
 \section{Accomplishments so far}
+% TODO: What is the plan for this section, I assume just convert it into a "Completed Work" of some kind?
     \subsection{Sinew Implementation}
     The main task of this problem is updating the Sinew code to be compatible with modern systems. In the original paper's implementation of Sinew they used Postgres as the underlying database \cite{Tahara_Diamond_Abadi_2014}. Since the publishing of the paper in 2014 Postgres has seen significant updates, so we need to update the version of Postgres and ensure that the system still works. For this phase, we aimed at simply getting the system to run with the version it was created with (9.3.0). The Sinew repository includes multiple bash and make files that perform the initial setup, install the database, and perform some basic tests.
 
@@ -57,11 +104,61 @@
     \subsection{MongoDB Benchmark}
     In the original paper the authors compared the implementation of Sinew against MongoDB and Postgres JSON. During this phase we also started configuring the MongoDB benchmark system. During these experiments the database systems were evaluated on their performance of varying queries from the NoBench NoSQL benchmark suite \cite{NoSQLBench}. This suite has been continually updated since the original publishing and will provide a viable benchmark dataset. We are currently working on getting an implementation of this suite running which will provide the datasets necessary for evaluating our database frameworks. This involves configuring data generation for a MongoDB database, which we will then extract the outputted JSON documents to use for Sinew and Postgres JSON respectively.
 
-    At this current stage we are configuring the necessary files for NoBench to generate the files. The benchmark does provide some documentation on how to configure the necessary YAML file to run the system, but it is limited at best. We have implemented some basic configurations that perform generation of simple data, along with performing reads and writes on a MongoDB database. We are currently configuring a YAML file that provides the data records that were used in the original paper, which involves implementing multiple binding functions from the NoBench suite. Once this is completed we will be able to use the generated data on all the benchmark database systems for the performance comparison.
+    At this current stage, we are configuring the necessary files for NoSQLBench to generate the files. The benchmark does provide some documentation on how to configure the necessary YAML file to run the system, but it is limited at best. We have implemented some basic configurations that perform the generation of simple data, along with performing reads and writes on a MongoDB database. We are currently configuring a YAML file that provides the data records that were used in the original paper, which involves implementing multiple binding functions from the NoSQLBench suite. Once this is completed we will be able to use the generated data on all the benchmark database systems for the performance comparison.
 
-\section{Results}
+\section{Experiments}
 
-\begin{figure}[!h]
+Our experiments try to mimic the experiments done in \cite{Tahara_Diamond_Abadi_2014} by replicating the queries created in \cite{Chasseur_Li_Patel_2013}. We ran all of our testing on isolated Ubuntu 24.04.1 instances. The system had a 3.60 GHz, 6-Core, AMD Ryzen 5 3600 processor with 16 GB of memory and 2 TB of NVMe solid-state storage. We executed each of the 11 queries (excluding the update task defined in \cite{Tahara_Diamond_Abadi_2014}), at least 4 times and took the average of the results. 
+
+\subsection{Load Times}
+
+\begin{figure}[!t]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+    ybar, % Regular bar chart
+    symbolic x coords={16 Million Records},
+    xtick=data,
+    xlabel={Operations},
+    ylabel={Execution Time (s)},
+    ymin=0,
+    ymax=2650,
+    legend style={at={(0.5,-0.25)}, anchor=north, legend columns=3, font=\small},
+    bar width=40pt,
+    width=0.95\columnwidth,
+    height=0.5\columnwidth,
+    grid=major,
+    enlarge x limits=0.4, % Adds space between grouped bars
+]
+
+% MongoDB Bar
+\addplot[fill=white, bar shift=-42pt] coordinates {(16 Million Records, 763.76)};
+\addlegendentry{MongoDB}
+
+% PG JSON Base
+\addplot[fill=gray, bar shift=+0pt] coordinates {(16 Million Records, 734.35)};
+\addlegendentry{PG JSON}
+
+% PG JSON Base
+\addplot[fill=lightgray, bar shift=+42pt] coordinates {(16 Million Records, 2598.029413)};
+\addlegendentry{Sinew Updating}
+
+% PG JSON Additional (stacked on top of the gray bar)
+\addplot[fill=black, bar shift=+42pt] coordinates {(16 Million Records, 565.169413)};
+\addlegendentry{Sinew Loading}
+
+\end{axis}
+\end{tikzpicture}
+\caption{Load Time}
+\label{fig:load_time}
+\Description[A chart showing the load times of each system.]{This chart shows the total time it took to load the data into each system. For MongoDB, this was about 760 seconds; for PG JSON, this was about 730 seconds; for Sinew, there was an initial load time of about 560 seconds, but then an additional "update" time of about 2,530 seconds, during which the data was converted into a usable format.}
+\end{figure}
+
+The initial paper evaluated the load time and data sizes of all of the evaluated systems; our evaluation only looked at the total load time. When comparing our results to \cite{Tahara_Diamond_Abadi_2014}, we noticed an interesting discrepancy in the Sinew load time. Sinew, seemed to perform as well as MongoDB in its initial loading, while only being twice as slow as PG JSON. When we ran our evaluation, we got similar load times for Sinew, actually beating the PG JSON load times, but we noticed there was a secondary operation that took place before the data was actually queryable. This "update" step pushed the total time to over three times longer than both the MongoDB and PG JSON loading. While this is not technically the "loading" of the data, and in theory, this updating could happen in the background while Sinew is running (as described in section 5 of \cite{Tahara_Diamond_Abadi_2014}), in the current implementation of Sinew, this is not possible, so the update step is required for any querying to take place. These are noted as separate operations in \autoref{fig:load_time}, but we wanted to mention it as it impacts the results of this section greatly.
+
+\subsection{Projections}
+
+\begin{figure}[!t]
 \centering
 \begin{tikzpicture}
 \begin{axis}[
@@ -94,11 +191,24 @@
 
 \end{axis}
 \end{tikzpicture}
-\caption{NoBench Query Performance (Q1-Q10)}
-\label{fig:results_chart}
+\caption{NoSQLBench Query Performance (Q1-Q10)}
+\label{fig:queries_1_10}
+\Description[A chart showing the total execution times of queries 1 through 10.]{This chart shows the total execution times of queries 1 through 10. For MongoDB, the queries took: 139.8 seconds, 149.4 seconds, 66.0 seconds, 66.6 seconds, 59.4 seconds, 60.6 seconds, 61.2 seconds, 64.2 seconds, 65.4 seconds, and 60 seconds. For PG JSON, the queries took: 91.62 seconds, 74.64 seconds, 31.02 seconds, 26.82 seconds, 24.12 seconds, 40.68 seconds, 42.42 seconds, 24.0 seconds, 26.34 seconds, and 31.56 seconds. For Sinew, some queries could not execute due to memory issues. Due to this, queries 1 through 5, query 8, and query 10 took, respectively: 50.52 seconds, 56.94 seconds, 54.6 seconds, 56.58 seconds, 49.14 seconds, 60.84 seconds, 44.94 seconds.}
 \end{figure}
 
-\begin{figure}[!h]
+Queries 1 through 4 are simple data projections of top-level, nested, and sparse keys. \autoref{fig:queries_1_10} shows that overall MongoDB did perform the slowest on the data provided. For queries 1 and 2, Sinew performed almost one-third of the time, compared to MongoDB. PostgreSQL followed closely behind Sinew, with its performance increasing for Query 2 (the nested key lookup).
+
+Regarding the sparse queries, Sinew lost its top spot and PostgreSQL took the lead in terms of execution time. PostgreSQL performed in about half the time Sinew and MongoDB took to complete the query, and was the only system to see an improvement when running Query 4 (a sparse key with double the cardinality of Query 3).
+
+\subsection{Selections}
+
+Queries 5 through 9 were evaluations on both "rifle-shot" selection (Query 5) and range selection. PostgreSQL maintained its leadership in query 5, finding the matching record in under half the time of the other systems. 
+
+Queries 6, through 9 were disappointing when it came to evaluating the Sinew. After spending weeks to get the Sinew implementation\footnote{\url{https://github.com/danieltahara/sinew}} running, we ran into memory issues that caused queries 6, 7, and 9 to fail every time. The output seemed to be complaining about missing "chunks" but due to the old version of PostgreSQL, we were struggling to find a usable solution to this issue. We eventually decided that these queries were just unexecutable without further development. Of the results we were able to produce, PostgreSQL was again outperforming MongoDB for every query and the gap between Sinew and MongoDB was closing, with the total time being within half a second.
+
+\subsection{Joins and Aggregations}
+
+\begin{figure}[!t]
 \centering
 \begin{tikzpicture}
 \begin{axis}[
@@ -127,50 +237,14 @@
 
 \end{axis}
 \end{tikzpicture}
-\caption{NoBench Query Performance (Q11)}
-\label{fig:results_chart}
+\caption{NoSQLBench Query Performance (Q11)}
+\label{fig:query_11}
+\Description[A chart showing the total execution times of query 11.]{This chart shows the total execution times of query 11. For MongoDB, this was about 1,080 seconds; for PG JSON, this was about 830 seconds; for Sinew, the program could no longer run the query as it was hitting memory errors on our system. We assume this is probably due to the version of PostgreSQL no longer being supported, but further investigation may find different results.}
 \end{figure}
 
-\begin{figure}[!h]
-\centering
-\begin{tikzpicture}
-\begin{axis}[
-    ybar, % Regular bar chart
-    symbolic x coords={11},
-    xtick=data,
-    xlabel={Operations},
-    ylabel={Execution Time (s)},
-    ymin=0,
-    ymax=2650,
-    legend style={at={(0.5,-0.25)}, anchor=north, legend columns=3, font=\small},
-    bar width=40pt,
-    width=0.95\columnwidth,
-    height=0.5\columnwidth,
-    grid=major,
-    enlarge x limits=0.4, % Adds space between grouped bars
-]
+Queries 10 and 11 test the performance of \texttt{GROUP BY} and \texttt{JOIN} operations in the PostgreSQL and Sinew implementations and the \texttt{\$group} and \texttt{\$lookup} operations in MongoDB. \autoref{fig:queries_1_10} shows the performance of Query 10 between all three systems. MongoDB was the slowest, even though Query 10 was the fastest query MongoDB was able to perform (with an average time of exactly one minute). Sinew was about 15 seconds faster than MongoDB and PostgreSQL was the fastest with under 30 seconds. The \texttt{jsonb} column type seems to have very high performance, even without indexing enabled.
 
-% MongoDB Bar
-\addplot[fill=white, bar shift=-42pt] coordinates {(11, 1084.8)};
-\addlegendentry{MongoDB}
-
-% PG JSON Base
-\addplot[fill=gray, bar shift=+0pt] coordinates {(11, 734.35)};
-\addlegendentry{PG JSON}
-
-% PG JSON Base
-\addplot[fill=lightgray, bar shift=+42pt] coordinates {(11, 2598.029413)};
-\addlegendentry{Sinew Updating}
-
-% PG JSON Additional (stacked on top of the gray bar)
-\addplot[fill=black, bar shift=+42pt] coordinates {(11, 565.169413)};
-\addlegendentry{Sinew Loading}
-
-\end{axis}
-\end{tikzpicture}
-\caption{Load Time}
-\label{fig:results_chart}
-\end{figure}
+Query 11's results are shown in \autoref{fig:query_11}. The results here were a bit disappointing. Sinew was again struck by the memory issues described in section 3.3. The system was unable to produce any results over any of our executions for this query and would always complain of "missing chunks." Of the results we were able to produce, PostgreSQL outperformed the MongoDB implementation by a little over 15\%. 
 
 \bibliographystyle{acm}
 \bibliography{references}
