@@ -2,6 +2,8 @@
 \usepackage{pgfplots}
 \usepackage{hyperref}
 \pgfplotsset{compat=1.18}
+\usepackage{tcolorbox}
+\tcbuselibrary{listingsutf8}
 
 \begin{document}
 
@@ -92,7 +94,7 @@
     In terms of scalability, Postgres scaling\cite{Postgres-scalable} requires the understanding and proper implementation of PostgreSQL horizontal scaling as well as vertical scaling. PostgreSQL is kept accessible by high availability (HA) regardless of hardware failures or software crashes. This type of HA implementation requires replication, failover, load balancing and continuous monitoring.
 
 
-\section{Accomplishments so far}
+\section{Completed Work}
 % TODO: What is the plan for this section, I assume just convert it into a "Completed Work" of some kind?
     \subsection{Sinew Implementation}
     The main task of this problem is updating the Sinew code to be compatible with modern systems. In the original paper's implementation of Sinew they used Postgres as the underlying database \cite{Tahara_Diamond_Abadi_2014}. Since the publishing of the paper in 2014 Postgres has seen significant updates, so we need to update the version of Postgres and ensure that the system still works. For this phase, we aimed at simply getting the system to run with the version it was created with (9.3.0). The Sinew repository includes multiple bash and make files that perform the initial setup, install the database, and perform some basic tests.
@@ -102,14 +104,17 @@
     We updated the initialization and startup files so that the project can be run on a WSL Ubuntu Linux instance. After the changes to these files the necessary software is able to be installed on the instance and can build a test database hosted on postgres. At this current point we are waiting to update the test bash files as we are working on acquiring the necessary data files to be able to insert and view documents; this will be covered in the next subsection. Once we have the data files we will verify that Sinew is able to load, store, and interact with semi-structured data. Following this, we will update the underlying Postgres version and perform any modifications to the repository that are needed to allow Sinew to be updated to current standards.
 
     \subsection{MongoDB Benchmark}
-    In the original paper the authors compared the implementation of Sinew against MongoDB and Postgres JSON. During this phase we also started configuring the MongoDB benchmark system. During these experiments the database systems were evaluated on their performance of varying queries from the NoBench NoSQL benchmark suite \cite{NoSQLBench}. This suite has been continually updated since the original publishing and will provide a viable benchmark dataset. We are currently working on getting an implementation of this suite running which will provide the datasets necessary for evaluating our database frameworks. This involves configuring data generation for a MongoDB database, which we will then extract the outputted JSON documents to use for Sinew and Postgres JSON respectively.
+    In the original paper the authors compared the implementation of Sinew against MongoDB and Postgres JSON. During this phase, we also started configuring the MongoDB benchmark system. We will expand on that below. During these experiments the database systems were evaluated on their performance of varying queries from the NoBench NoSQL benchmark suite \cite{NoSQLBench}. Testing on Mongo was pretty straightforward in terms of implementation. \cite{NoSQLBench} has pre-written queries for Mongo version 2.0.0, but as the program has evolved, some of those queries were out-of-date. The most obvious being Queries 10 and 11; for those queries, we had to re-implement the queries with Mongo's \texttt{aggregate} framework, released in Mongo 2.2, with support for \texttt{\$lookup} operations added in Mongo 6.0  \cite{Done2023}.
 
-    At this current stage, we are configuring the necessary files for NoSQLBench to generate the files. The benchmark does provide some documentation on how to configure the necessary YAML file to run the system, but it is limited at best. We have implemented some basic configurations that perform the generation of simple data, along with performing reads and writes on a MongoDB database. We are currently configuring a YAML file that provides the data records that were used in the original paper, which involves implementing multiple binding functions from the NoSQLBench suite. Once this is completed we will be able to use the generated data on all the benchmark database systems for the performance comparison.
-
-       \subsection{PostgreSQL JSON Benchmark}
+    \subsection{PostgreSQL JSON Benchmark}
     As mentioned in the original paper, PostgreSQL 9.3 was one of the systems that Sinew was compared to in terms of performance. Through storing the data in \texttt{jsonb}, we were able to load all 16 million rows to the database and recreate the queries of the original paper with little to no issue. However, many advancements have been made in the last ten years since the paper was written. For our experiments, we recreated the queries from the paper using a much more modern version of the database, PostgreSQL 14.4. A significant difference between 9.3 and 14.4 is that \texttt{jsonb} was not supported at the time of the original paper~\cite{PostgtesVersions}. This proves to be a significant detail since we stored our data in \texttt{jsonb} format within the database. 
 
     Due to \texttt{jsonb} not being available at the time the paper was originally published, this also meant that \texttt{jsonb}-modifying operators and functions had also not been available. Without these advancements, we would not have had access to the operators and functions that enable queries to delete, modify, and insert into \texttt{jsonb} values. It is apparent that PostgreSQL 14.4 also has many improvements regarding performance that were not available at the time of the initial paper such as has aggregation being able to use disk as well as parallel merge joins and queries. 
+
+    \subsection{NoSQLBench}
+    In the original paper the authors used the NoBench NoSQL benchmark suite to run their analysis. As this is a closed-source tool, we did not have access to it for our analysis. In lieu of that, we chose to use an existing, open-source, tool that has a similar feature set and worked well for our use case; this tool was NoSQLBench \cite{NoSQLBench}. 
+    
+    This tool was built for NoSQL databases like MongoDB, Neo4J, Pulsar, etc. \footnote{\url{https://github.com/nosqlbench/nosqlbench/tree/main/nb-adapters}}, but did not have any support for PostgreSQL JSON or Sinew. This meant we could not use this tool for our entire testing suite. Our solution was to generate all of the required data (per the NoSQL Benchmark's specifications \cite{Chasseur_Li_Patel_2013}) and then manually run the queries on the environments ourselves. Sinew already had this feature built into the repo \footnote{\url{https://github.com/danieltahara/sinew/tree/master/benchmark/system/document}}, so we were able to easily run that (once our refactoring was done). MongoDB was easy enough to implement as we just set up a JavaScript file with all of our queries and used JavaScript's timers to track the time. PostgreSQL was also relatively simple as we were able to open a connection with a Python script and run the queries directly. 
 
 \section{Experiments}
 
@@ -203,16 +208,43 @@ The initial paper evaluated the load time and data sizes of all of the evaluated
 
 Queries 1 through 4 are simple data projections of top-level, nested, and sparse keys. \autoref{fig:queries_1_10} shows that overall MongoDB did perform the slowest on the data provided. For queries 1 and 2, Sinew performed almost one-third of the time, compared to MongoDB. PostgreSQL followed closely behind Sinew, with its performance increasing for Query 2 (the nested key lookup).
 
-Regarding the sparse queries, Sinew lost its top spot and PostgreSQL took the lead in terms of execution time. PostgreSQL performed in about half the time Sinew and MongoDB took to complete the query, and was the only system to see an improvement when running Query 4 (a sparse key with double the cardinality of Query 3).
+Regarding the sparse queries, Sinew lost its top spot and PostgreSQL took the lead in terms of execution time. PostgreSQL performed in about half the time Sinew and MongoDB took to complete the query, and was the only system to see an improvement when running Query 4 (a sparse key with double the cardinality of Query 3). Below we can see the difference in implementation for each of those queries:
 
-As mentioned in the original paper, Query 4 performs a query for array elements within the database. The query written to perform this on out PostgreSQL benchmark looked like the following:
+\noindent
+MongoDB:
+\begin{tcolorbox}[colback=gray!10, colframe=gray!50, sharp corners, boxrule=0.1mm]
+\begin{verbatim} 
+db["main"].find({
+  "$or":[ 
+    { "sparse_XX0" : {"$exists" : True} },
+    { "sparse_YY0" : {"$exists" : True} } 
+  ] 
+}, ["sparse_XX0", "sparse_YY0"])
+\end{verbatim}
+\end{tcolorbox}
+
+\noindent
+PostgreSQL JSON:
+\begin{tcolorbox}[colback=gray!10, colframe=gray!50, sharp corners, boxrule=0.1mm]
 \begin{verbatim} 
 SELECT 
-    id,
-    jsonb_array_elements_text(data -> 'nested_arr') 
-    AS nested_arr_elements
-FROM json_data;
+    data ->> 'sparse_XX0' AS sparse_1,
+    data ->> 'sparse_YY0' AS sparse_2
+FROM main
+WHERE data ? 'sparse_XX0' OR data ? 'sparse_YY0';
 \end{verbatim}
+\end{tcolorbox}
+
+\noindent
+Sinew:
+\begin{tcolorbox}[colback=gray!10, colframe=gray!50, sharp corners, boxrule=0.1mm]
+\begin{verbatim} 
+SELECT 
+    document_get_text(data, 'sparse_XX0'),
+    document_get_text(data, 'sparse_YY0') 
+FROM main;
+\end{verbatim}
+\end{tcolorbox}
 
 \subsection{Selections}
 
@@ -259,6 +291,59 @@ Queries 6, through 9 were disappointing when it came to evaluating the Sinew. Af
 Queries 10 and 11 test the performance of \texttt{GROUP BY} and \texttt{JOIN} operations in the PostgreSQL and Sinew implementations and the \texttt{\$group} and \texttt{\$lookup} operations in MongoDB. \autoref{fig:queries_1_10} shows the performance of Query 10 between all three systems. MongoDB was the slowest, even though Query 10 was the fastest query MongoDB was able to perform (with an average time of exactly one minute). Sinew was about 15 seconds faster than MongoDB and PostgreSQL was the fastest with under 30 seconds. The \texttt{jsonb} column type seems to have very high performance, even without indexing enabled.
 
 Query 11's results are shown in \autoref{fig:query_11}. The results here were a bit disappointing. Sinew was again struck by the memory issues described in section 3.3. The system was unable to produce any results over any of our executions for this query and would always complain of "missing chunks." Of the results we were able to produce, PostgreSQL outperformed the MongoDB implementation by a little over 15\%. 
+
+Though it did not complete, we wanted to show the implementation differences for these queries to highlight Sinew's simple syntax.
+
+\noindent
+MongoDB:
+\begin{tcolorbox}[colback=gray!10, colframe=gray!50, sharp corners, boxrule=0.1mm]
+\begin{verbatim} 
+db["main"].aggregate([
+  {
+    $match: {
+      num: { $gte: XXXXX, $lte: YYYYY }
+    }
+  },
+  {
+    $lookup: {
+      from: "main",
+      localField: "nested_obj.str",
+      foreignField: "str1",
+      as: "matchedDocs"
+    }
+  }
+]);
+\end{verbatim}
+\end{tcolorbox}
+
+\noindent
+PostgreSQL JSON:
+\begin{tcolorbox}[colback=gray!10, colframe=gray!50, sharp corners, boxrule=0.1mm]
+\begin{verbatim} 
+SELECT 
+    jd.id,
+    c.data ->> 'nested_obj' ->> 'str',
+    jd.data ->> 'str1' AS str1
+FROM main jd
+LEFT JOIN main od
+    ON jd.data -> 'nested_obj' ->> 'str' 
+        = od.data ->> 'str1'
+WHERE (jd.data ->> 'num')::int >= XXXXX
+AND (jd.data ->> 'num')::int <= YYYYY;
+\end{verbatim}
+\end{tcolorbox}
+
+\noindent
+Sinew:
+\begin{tcolorbox}[colback=gray!10, colframe=gray!50, sharp corners, boxrule=0.1mm]
+\begin{verbatim} 
+SELECT *
+FROM main t1 INNER JOIN main t2
+    ON (document_get_text(t1.nested_obj, 'str') 
+        = t2.str1)
+WHERE left.num BETWEEN XXXXX AND YYYYY;  
+\end{verbatim}
+\end{tcolorbox}
 
 \bibliographystyle{acm}
 \bibliography{final_references}
