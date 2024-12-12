@@ -205,6 +205,15 @@ Queries 1 through 4 are simple data projections of top-level, nested, and sparse
 
 Regarding the sparse queries, Sinew lost its top spot and PostgreSQL took the lead in terms of execution time. PostgreSQL performed in about half the time Sinew and MongoDB took to complete the query, and was the only system to see an improvement when running Query 4 (a sparse key with double the cardinality of Query 3).
 
+As mentioned in the original paper, Query 4 performs a query for array elements within the database. The query written to perform this on out PostgreSQL benchmark looked like the following:
+\begin{verbatim} 
+SELECT 
+    id,
+    jsonb_array_elements_text(data -> 'nested_arr') 
+    AS nested_arr_elements
+FROM json_data;
+\end{verbatim}
+
 \subsection{Selections}
 
 Queries 5 through 9 were evaluations on both "rifle-shot" selection (Query 5) and range selection. PostgreSQL maintained its leadership in query 5, finding the matching record in under half the time of the other systems. 
