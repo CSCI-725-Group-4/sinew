@@ -327,7 +327,6 @@ PostgreSQL JSON:
 \begin{tcolorbox}[colback=gray!10, colframe=gray!50, sharp corners, boxrule=0.1mm]
 \begin{verbatim} 
 SELECT 
-    jd.id,
     c.data ->> 'nested_obj' ->> 'str',
     jd.data ->> 'str1' AS str1
 FROM main jd
