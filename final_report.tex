@@ -106,6 +106,11 @@
 
     At this current stage, we are configuring the necessary files for NoSQLBench to generate the files. The benchmark does provide some documentation on how to configure the necessary YAML file to run the system, but it is limited at best. We have implemented some basic configurations that perform the generation of simple data, along with performing reads and writes on a MongoDB database. We are currently configuring a YAML file that provides the data records that were used in the original paper, which involves implementing multiple binding functions from the NoSQLBench suite. Once this is completed we will be able to use the generated data on all the benchmark database systems for the performance comparison.
 
+        \subsection{PostgresSQL JSON Benchmark}
+    As mentioned in the original paper, PostgreSQL 9.3 was one of the systems that Sinew was compared to in terms of performance. However, many advancements have been made in the last ten years since the paper was written. For our experiments, we recreated the queries from the paper using a much more modern version of the database, PostgreSQL 14.4. A significant difference between 9.3 and 14.4 is that \texttt{jsonb} was not supported at the time of the original paper~\cite{PostgtesVersions}. This proves to be a significant detail since we stored our data in \texttt{jsonb} format within the database. 
+
+    Through storing the data in \texttt{jsonb}, we were able to load all 16 million rows to the database and recreate the queries of the original paper with little to no issue. 
+
 \section{Experiments}
 
 Our experiments try to mimic the experiments done in \cite{Tahara_Diamond_Abadi_2014} by replicating the queries created in \cite{Chasseur_Li_Patel_2013}. We ran all of our testing on isolated Ubuntu 24.04.1 instances. The system had a 3.60 GHz, 6-Core, AMD Ryzen 5 3600 processor with 16 GB of memory and 2 TB of NVMe solid-state storage. We executed each of the 11 queries (excluding the update task defined in \cite{Tahara_Diamond_Abadi_2014}), at least 4 times and took the average of the results. 
